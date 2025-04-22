@@ -184,7 +184,7 @@ def predict(face, interpreter, confidence_threshold=0.7):
 # -------------------------------
 # Face Detection and Prediction
 # -------------------------------
-def detect_and_predict(image, interpreter):
+def detect_and_predict(image, interpreter, confidence_threshold=0.7):
     """
     Detect faces using MediaPipe and predict mask status.
     """
@@ -211,7 +211,7 @@ def detect_and_predict(image, interpreter):
                 if face_crop.size > 0:
                     processed_face = preprocess_face(face_crop)
                     if processed_face is not None:
-                        prediction, confidence_level = predict(processed_face, interpreter)
+                        prediction, confidence_level = predict(processed_face, interpreter, confidence_threshold)
                         if prediction is not None:
                             class_labels = ["With Mask", "Without Mask"]
                             predicted_label = class_labels[np.argmax(prediction)]
@@ -232,12 +232,12 @@ def detect_and_predict(image, interpreter):
 # -------------------------------
 # Process Uploaded Image
 # -------------------------------
-def process_image(image):
+def process_image(image, confidence_threshold):
     """Process a single image and display original vs detected results"""
     try:
         image = image.convert("RGB")
         image = ImageOps.exif_transpose(image)
-        processed_image, faces, proc_time = detect_and_predict(image, interpreter)
+        processed_image, faces, proc_time = detect_and_predict(image, interpreter, confidence_threshold)
         col1, col2 = st.columns(2)
         with col1:
             st.image(image, caption="Original Image", use_container_width=True)
@@ -322,7 +322,7 @@ def main():
             camera_image = st.camera_input("Take a picture")
             if camera_image:
                 image = Image.open(camera_image)
-                process_image(image)
+                process_image(image, confidence_threshold)
         else:
             st.info("Click 'Start Camera' to begin using the webcam.")
 
@@ -332,7 +332,7 @@ def main():
         uploaded_file = st.file_uploader("Upload an image", type=["jpg", "jpeg", "png"])
         if uploaded_file:
             image = Image.open(uploaded_file)
-            process_image(image)
+            process_image(image, confidence_threshold)
 
     with tab3:
         st.subheader("Sample Images")
@@ -342,7 +342,7 @@ def main():
             selected_sample = st.selectbox("Choose a sample image:", list(sample_images.keys()))
             if st.button("📊 View Detection Results", key="view_sample"):
                 image = Image.open(sample_images[selected_sample])
-                process_image(image)
+                process_image(image, confidence_threshold)
         else:
             st.warning("No sample images found in `sample_images` directory.")
 
