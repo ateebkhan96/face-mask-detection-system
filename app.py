@@ -80,7 +80,7 @@ mp_face_detection = mp.solutions.face_detection
 @st.cache_resource
 def load_model():
     try:
-        interpreter = tflite.Interpreter(model_path="model\face_mask_model.tflite")
+        interpreter = tflite.Interpreter(model_path="model/face_mask_model.tflite")
         interpreter.allocate_tensors()
         return interpreter
     except Exception as e:
