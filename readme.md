@@ -49,7 +49,7 @@ py -3.11 -m venv face-mask-env
     ```
 #### 4. Installing Dependencies
 ```
-pip install requirements.txt
+pip install -r requirements.txt
 ```
 #### 5. Check Model Avability
 The pre-trained TensorFlow Lite model is already included in the models directory of the GitHub repository. No additional download is required
